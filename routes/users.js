@@ -1,7 +1,10 @@
 const router = require("express").Router();
+const { getUsers } = require("../controllers/users");
 
-router.get("users", () => console.log("GET users"));
-router.get("users/foo", () => console.log("GET users"));
-router.get("users/bar", () => console.log("GET users"));
+// start with /users
+
+router.get("/", getUsers);
+router.get("/:userId", () => console.log("GET users by ID"));
+router.post("/", () => console.log("POST users"));
 
 module.exports = router;
