@@ -11,7 +11,7 @@ mongoose
     console.log("connected to D8");
   })
   .catch(console.error);
-
+app.use(express.json());
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
