@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
-
+const { getUsers } = require("./controllers/users");
+// imagine we make a GET request to /users
 const app = express();
 
 const { PORT = 3001 } = process.env;
@@ -12,6 +13,9 @@ mongoose
   })
   .catch(console.error);
 app.use(express.json());
+
+//app.get("/users", getUsers);
+
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {

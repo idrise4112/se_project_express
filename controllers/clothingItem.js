@@ -1,12 +1,13 @@
-const clothingItem = require("../models/clothItem");
+const clothingItem = require("../models/clothingItem");
 
+// POST /items
 const createItem = (req, res) => {
   console.log("Request body:", req.body);
-
+  const owner = req.user._id;
   const { name, weather, imageURL } = req.body;
 
   clothingItem
-    .create({ name, weather, imageURL })
+    .create({ name, weather, imageURL, owner })
     .then((item) => {
       console.log("Created item:", item);
       res.status(201).send({ data: item });
@@ -19,6 +20,22 @@ const createItem = (req, res) => {
     });
 };
 
+// GET /items
+const getItems = (req, res) => {
+  clothingItem
+    .find({})
+    .then((items) => {
+      res.status(200).send({ data: items });
+    })
+    .catch((e) => {
+      console.error("Error from getItems:", e);
+      res
+        .status(500)
+        .send({ message: "Error from getItems", error: e.message });
+    });
+};
+
 module.exports = {
   createItem,
+  getItems,
 };
