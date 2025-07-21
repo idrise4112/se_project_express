@@ -114,6 +114,28 @@ const unlikeItem = async (req, res, next) => {
   }
 };
 
+const deleteItem = async (req, res, next) => {
+  const { itemId } = req.params;
+
+  // Validate ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(400).send({ message: "Invalid item ID format" });
+  }
+
+  try {
+    const deletedItem = await clothingItem.findByIdAndDelete(itemId);
+
+    if (!deletedItem) {
+      return res.status(404).send({ message: "Item not found" });
+    }
+
+    return res.status(200).send({ data: deletedItem });
+  } catch (err) {
+    console.error("Error from deleteItem:", err);
+    return next(err);
+  }
+};
+
 // ✅ Export all functions
 module.exports = {
   createItem,
@@ -121,4 +143,5 @@ module.exports = {
   updateItem,
   likeItem,
   unlikeItem,
+  deleteItem,
 };

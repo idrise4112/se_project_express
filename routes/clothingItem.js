@@ -5,6 +5,7 @@ const {
   updateItem,
   likeItem,
   unlikeItem,
+  deleteItem,
 } = require("../controllers/clothingItem");
 
 // LIKE an item
@@ -19,6 +20,7 @@ router.post("/", createItem);
 // UPDATE
 router.put("/:itemId", updateItem);
 
+router.delete("/:itemId", deleteItem);
 // READ
 router.get("/", getItems);
 
