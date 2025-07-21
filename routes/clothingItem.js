@@ -1,14 +1,20 @@
 const router = require("express").Router();
-const { createItem, getItems } = require("../controllers/clothingItem");
+const {
+  createItem,
+  getItems,
+  updateItem,
+} = require("../controllers/clothingItem");
 
 // starts with /items
 
-//CRUD
+// CRUD
 
-//CREATE
+// CREATE
 router.post("/", createItem); // post request to /items
 
-//READ
+// UPDATE
+router.patch("/:itemId", updateItem); // PATCH /items/:itemId
+// READ
 router.get("/", getItems);
 
 module.exports = router;

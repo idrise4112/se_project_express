@@ -35,7 +35,19 @@ const getItems = (req, res) => {
     });
 };
 
-module.exports = {
-  createItem,
-  getItems,
+const updateItem = (req, res) => {
+  const { itemId } = req.params;
+  const { imageURL } = req.body;
+
+  clothingItem
+    .findByIdAndUpdate(itemId, { $set: { imageURL } }, { new: true })
+    .orFail()
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+
+  module.exports = {
+    createItem,
+    getItems,
+    updateItem,
+  };
 };
