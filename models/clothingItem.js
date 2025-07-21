@@ -5,12 +5,14 @@ const clothingItem = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    minlength: [2, "minimum length is 2"],
+    maxlength: [30, "maximum length is 30"],
   },
   weather: {
     type: String,
     required: true,
   },
-  imageURL: {
+  imageUrl: {
     type: String,
     required: true,
     validate: {

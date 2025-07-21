@@ -3,17 +3,22 @@ const {
   createItem,
   getItems,
   updateItem,
+  likeItem,
+  unlikeItem,
 } = require("../controllers/clothingItem");
 
-// starts with /items
+// LIKE an item
+router.put("/:itemId/likes", likeItem);
 
-// CRUD
+// UNLIKE an item
+router.delete("/:itemId/likes", unlikeItem);
 
 // CREATE
-router.post("/", createItem); // post request to /items
+router.post("/", createItem);
 
 // UPDATE
-router.patch("/:itemId", updateItem); // PATCH /items/:itemId
+router.put("/:itemId", updateItem);
+
 // READ
 router.get("/", getItems);
 
