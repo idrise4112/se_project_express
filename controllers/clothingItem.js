@@ -80,7 +80,7 @@ const likeItem = async (req, res, next) => {
     return res.send({ data: updatedItem });
   } catch (err) {
     console.error("Error from likeItem:", err);
-    next(err);
+    return next(err);
   }
 };
 
@@ -108,7 +108,7 @@ const unlikeItem = async (req, res, next) => {
     return res.send({ data: updatedItem });
   } catch (err) {
     console.error("Error from unlikeItem:", err);
-    next(err);
+    return next(err);
   }
 };
 
