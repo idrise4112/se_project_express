@@ -4,7 +4,7 @@ const clothingItem = require("../models/clothingItem");
 const createItem = (req, res) => {
   console.log("Request body:", req.body);
   const owner = req.user._id;
-  const { name, weather, imageURL } = req.body;
+  const { name, weather } = req.body;
 
   clothingItem
     .create({ name, weather, imageURL, owner })
@@ -35,6 +35,7 @@ const getItems = (req, res) => {
     });
 };
 
+// PATCH /items/:itemId
 const updateItem = (req, res) => {
   const { itemId } = req.params;
   const { imageURL } = req.body;
@@ -44,10 +45,11 @@ const updateItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => res.status(500).send({ message: err.message }));
+};
 
-  module.exports = {
-    createItem,
-    getItems,
-    updateItem,
-  };
+// ✅ Move this outside all functions!
+module.exports = {
+  createItem,
+  getItems,
+  updateItem,
 };
