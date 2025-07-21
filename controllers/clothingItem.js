@@ -16,10 +16,9 @@ const createItem = (req, res) => {
     .catch((e) => {
       console.error("Error from createItem:", e);
       if (e.name === "ValidationError") {
-        res.status(400).send({ message: e.message });
-        return;
+        return res.status(400).send({ message: e.message });
       }
-      res
+      return res
         .status(500)
         .send({ message: "Error from createItem", error: e.message });
     });
@@ -34,26 +33,31 @@ const getItems = (req, res) => {
     })
     .catch((e) => {
       console.error("Error from getItems:", e);
-      res
+      return res
         .status(500)
         .send({ message: "Error from getItems", error: e.message });
     });
 };
 
 // PATCH /items/:itemId
-const updateItem = (req, res) => {
+const updateItem = async (req, res, next) => {
   const { itemId } = req.params;
   const { imageUrl } = req.body;
 
-  clothingItem
-    .findByIdAndUpdate(itemId, { $set: { imageUrl } }, { new: true })
-    .orFail()
-    .then((item) => res.status(200).send({ data: item }))
-    .catch((err) =>
-      res
-        .status(500)
-        .send({ message: "Error from updateItem", error: err.message })
-    );
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(400).send({ message: "Invalid item ID" });
+  }
+
+  try {
+    const updatedItem = await clothingItem
+      .findByIdAndUpdate(itemId, { $set: { imageUrl } }, { new: true })
+      .orFail();
+
+    return res.status(200).send({ data: updatedItem });
+  } catch (err) {
+    console.error("Error from updateItem:", err);
+    return next(err);
+  }
 };
 
 // LIKE /items/:itemId/likes
@@ -61,7 +65,6 @@ const likeItem = async (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  // ✅ ObjectId validation
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
     return res.status(400).send({ message: "Invalid item ID" });
   }
@@ -89,7 +92,6 @@ const unlikeItem = async (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  // ✅ ObjectId validation
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
     return res.status(400).send({ message: "Invalid item ID" });
   }
