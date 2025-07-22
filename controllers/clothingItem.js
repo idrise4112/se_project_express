@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const clothingItem = require("../models/clothingItem");
 const handleError = require("../utils/handleError");
 

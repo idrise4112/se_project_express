@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
-const { getUsers } = require("./controllers/users");
 // imagine we make a GET request to /users
 const app = express();
 
