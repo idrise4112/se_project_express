@@ -18,7 +18,6 @@ app.use((req, res, next) => {
 
   next();
 });
-app.get("/users", getUsers);
 
 app.use("/", mainRouter);
 
