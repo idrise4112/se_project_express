@@ -13,6 +13,8 @@ WTWR is a back-end project designed to power the "What to Wear?" application. It
 - **ESLint** for maintaining clean and consistent code
 - **Postman** for API testing, including collections and environment setup
 
+## link to project video : \*\* https://www.loom.com/share/d72c2a4a0cc444f0a4494090c93d68ab?sid=43fdaa90-6c37-49f3-83c6-95b0e7a3d84b
+
 ## Running the Project
 
 To start the server normally:
@@ -21,4 +23,4 @@ To start the server normally:
 npm run start
 ```
 
-![image](https://c8.alamy.com/comp/2R6WA76/2017-audi-s3-black-ed-tfsi-quattro-s-a-310-s-tronic-auto-startstop-yellow-hatchback-at-the-classic-performance-motor-show-at-hoghton-tower-2R6WA76.jpg)
+![image]()
