@@ -2,17 +2,29 @@ const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("./errors");
 
 function handleError(err, res) {
   console.error("Error name:", err.name);
+  // console.error("Stack trace:", err.stack);
 
-  if (err.name === "ValidationError") {
-    return res.status(BAD_REQUEST).send({ message: "Invalid data provided." });
-  }
+  const messageMap = {
+    ValidationError: {
+      status: BAD_REQUEST,
+      message: "Invalid data provided.",
+    },
+    CastError: {
+      status: BAD_REQUEST,
+      message: "Invalid item ID format.",
+    },
+    DocumentNotFoundError: {
+      status: NOT_FOUND,
+      message: "Requested item not found.",
+    },
+  };
 
-  if (err.name === "CastError") {
-    return res.status(BAD_REQUEST).send({ message: "Invalid item ID format." });
-  }
+  const errorResponse = messageMap[err.name];
 
-  if (err.name === "DocumentNotFoundError") {
-    return res.status(NOT_FOUND).send({ message: "Requested item not found." });
+  if (errorResponse) {
+    return res
+      .status(errorResponse.status)
+      .send({ message: errorResponse.message });
   }
 
   return res

@@ -21,51 +21,38 @@ const getItems = (req, res) => {
 };
 
 // LIKE /items/:itemId/likes
-const likeItem = async (req, res) => {
+const likeItem = (req, res) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  try {
-    const updatedItem = await clothingItem
-      .findByIdAndUpdate(
-        itemId,
-        { $addToSet: { likes: userId } },
-        { new: true }
-      )
-      .orFail();
-
-    return res.send({ data: updatedItem });
-  } catch (err) {
-    return handleError(err, res);
-  }
+  clothingItem
+    .findByIdAndUpdate(itemId, { $addToSet: { likes: userId } }, { new: true })
+    .orFail()
+    .then((updatedItem) => res.send({ data: updatedItem }))
+    .catch((err) => handleError(err, res));
 };
 
 // UNLIKE /items/:itemId/likes
-const unlikeItem = async (req, res) => {
+const unlikeItem = (req, res) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  try {
-    const updatedItem = await clothingItem
-      .findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
-      .orFail();
-
-    return res.send({ data: updatedItem });
-  } catch (err) {
-    return handleError(err, res);
-  }
+  clothingItem
+    .findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
+    .orFail()
+    .then((updatedItem) => res.send({ data: updatedItem }))
+    .catch((err) => handleError(err, res));
 };
 
-// DELETE /items/:itemId
-const deleteItem = async (req, res) => {
+// DELETE /items/:itemId —
+const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  try {
-    const deletedItem = await clothingItem.findByIdAndDelete(itemId).orFail();
-    return res.status(200).send({ data: deletedItem });
-  } catch (err) {
-    return handleError(err, res);
-  }
+  clothingItem
+    .findByIdAndDelete(itemId)
+    .orFail()
+    .then((deletedItem) => res.status(200).send({ data: deletedItem }))
+    .catch((err) => handleError(err, res));
 };
 
 module.exports = {
