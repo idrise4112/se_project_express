@@ -12,13 +12,16 @@ const { PORT = 3001 } = process.env;
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
+    // eslint-disable-next-line no-console
     console.log(" Connected to wtwr_db");
 
     app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
       console.log(`Server is listening on port ${PORT}`);
     });
   })
   .catch((err) => {
+    // eslint-disable-next-line no-console
     console.error(" MongoDB connection error:", err);
   });
 
@@ -29,8 +32,7 @@ app.use(express.json());
 // Routes
 app.use("/", mainRouter);
 
-// Catch-all for unmatched routes
-app.use("*", (req, res) => {
+app.use(/.*/, (req, res) => {
   res
     .status(404)
     .type("application/json")

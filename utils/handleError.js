@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
@@ -6,6 +7,7 @@ const {
   SERVER_ERROR,
 } = require("./errors");
 
+// eslint-disable-next-line no-unused-vars
 function handleError(err, req, res, next) {
   console.error(
     `[${new Date().toISOString()}] [${req.method} ${req.originalUrl}]`
@@ -61,7 +63,7 @@ function handleError(err, req, res, next) {
       .json({ message: err.message });
   }
 
-  console.warn(` Unhandled error type: ${err?.name}`);
+  console.warn(`Unhandled error type: ${err?.name}`);
   return res
     .status(SERVER_ERROR)
     .type("application/json")
