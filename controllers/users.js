@@ -4,18 +4,45 @@ const User = require("../models/user");
 const handleError = require("../utils/handleError");
 const { JWT_SECRET } = require("../utils/config");
 
+// Helper to sanitize user object
+const sanitizeUser = (user) => {
+  const obj = user.toObject();
+  delete obj.password;
+  return obj;
+};
+
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => {
+      const sanitizedUsers = users.map(sanitizeUser);
+      res.status(200).send(sanitizedUsers);
+    })
     .catch((err) => handleError(err, res));
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id;
 
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(200).send(sanitizeUser(user)))
+    .catch((err) => handleError(err, res));
+};
+
+const updateUser = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .orFail()
+    .then((updatedUser) => res.status(200).send(sanitizeUser(updatedUser)))
     .catch((err) => handleError(err, res));
 };
 
@@ -33,11 +60,7 @@ const createUser = (req, res) => {
     .then((hashedPassword) => {
       return User.create({ name, avatar, email, password: hashedPassword });
     })
-    .then((user) => {
-      const userWithoutPassword = user.toObject();
-      delete userWithoutPassword.password;
-      res.status(201).send(userWithoutPassword);
-    })
+    .then((user) => res.status(201).send(sanitizeUser(user)))
     .catch((err) => {
       if (err.code === 11000) {
         return res.status(409).send({ message: "Email already exists." });
@@ -61,4 +84,10 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getUser, createUser, login };
+module.exports = {
+  getUsers,
+  getCurrentUser,
+  updateUser,
+  createUser,
+  login,
+};
