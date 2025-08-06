@@ -1,8 +1,14 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const handleError = require("../utils/handleError");
 const { JWT_SECRET } = require("../utils/config");
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  UNAUTHORIZED,
+  CONFLICT,
+} = require("../utils/errors");
 
 // Helper to sanitize user object
 const sanitizeUser = (user) => {
@@ -11,25 +17,25 @@ const sanitizeUser = (user) => {
   return obj;
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       const sanitizedUsers = users.map(sanitizeUser);
-      res.status(200).send(sanitizedUsers);
+      res.status(OK).json(sanitizedUsers);
     })
-    .catch((err) => handleError(err, res));
+    .catch(next);
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
 
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(200).send(sanitizeUser(user)))
-    .catch((err) => handleError(err, res));
+    .then((user) => res.status(OK).json(sanitizeUser(user)))
+    .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
 
@@ -42,45 +48,53 @@ const updateUser = (req, res) => {
     }
   )
     .orFail()
-    .then((updatedUser) => res.status(200).send(sanitizeUser(updatedUser)))
-    .catch((err) => handleError(err, res));
+    .then((updatedUser) => res.status(OK).json(sanitizeUser(updatedUser)))
+    .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email || !password) {
     return res
-      .status(400)
-      .send({ message: "Email and password are required." });
+      .status(BAD_REQUEST)
+      .json({ message: "Email and password are required." });
   }
 
-  bcrypt
-    .hash(password, 10)
-    .then((hashedPassword) => {
-      return User.create({ name, avatar, email, password: hashedPassword });
-    })
-    .then((user) => res.status(201).send(sanitizeUser(user)))
-    .catch((err) => {
-      if (err.code === 11000) {
-        return res.status(409).send({ message: "Email already exists." });
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        return res.status(CONFLICT).json({ message: "Email already exists." });
       }
-      handleError(err, res);
-    });
+
+      return bcrypt.hash(password, 10).then((hashedPassword) => {
+        return User.create({ name, avatar, email, password: hashedPassword });
+      });
+    })
+    .then((user) => res.status(CREATED).json(sanitizeUser(user)))
+    .catch(next);
 };
 
 const login = (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .json({ message: "Email and password are required." });
+  }
 
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      res.status(OK).json({ token });
     })
     .catch(() => {
-      res.status(401).send({ message: "Incorrect email or password." });
+      res
+        .status(UNAUTHORIZED)
+        .json({ message: "Incorrect email or password." });
     });
 };
 

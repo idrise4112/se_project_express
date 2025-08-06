@@ -1,8 +1,18 @@
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("./errors");
+const {
+  BAD_REQUEST,
+  UNAUTHORIZED,
+  FORBIDDEN,
+  NOT_FOUND,
+  SERVER_ERROR,
+} = require("./errors");
 
-function handleError(err, res) {
-  console.error("Error name:", err.name);
-  // console.error("Stack trace:", err.stack);
+function handleError(err, req, res, next) {
+  console.error(
+    `[${new Date().toISOString()}] [${req.method} ${req.originalUrl}]`
+  );
+  console.error("Error name:", err?.name);
+  console.error("Error message:", err?.message);
+  console.error("Full error object:", err);
 
   const messageMap = {
     ValidationError: {
@@ -17,19 +27,40 @@ function handleError(err, res) {
       status: NOT_FOUND,
       message: "Requested item not found.",
     },
+    UnauthorizedError: {
+      status: UNAUTHORIZED,
+      message: "Authentication required.",
+    },
+    ForbiddenError: {
+      status: FORBIDDEN,
+      message: "You do not have permission to perform this action.",
+    },
+    JsonWebTokenError: {
+      status: UNAUTHORIZED,
+      message: "Invalid token.",
+    },
+    TokenExpiredError: {
+      status: UNAUTHORIZED,
+      message: "Token has expired.",
+    },
   };
 
-  const errorResponse = messageMap[err.name];
+  const errorResponse = messageMap[err?.name];
 
-  if (errorResponse) {
+  if (errorResponse && errorResponse.status) {
     return res
       .status(errorResponse.status)
-      .send({ message: errorResponse.message });
+      .json({ message: errorResponse.message });
   }
 
+  if (err?.statusCode && err?.message) {
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  console.warn(`Unhandled error type: ${err?.name}`);
   return res
     .status(SERVER_ERROR)
-    .send({ message: "An error has occurred on the server." });
+    .json({ message: "An error has occurred on the server." });
 }
 
 module.exports = handleError;
