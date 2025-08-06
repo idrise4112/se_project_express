@@ -6,7 +6,7 @@ const {
   SERVER_ERROR,
 } = require("./errors");
 
-function handleError(err, req, res, next) {
+function handleError(err, req, res) {
   console.error(
     `[${new Date().toISOString()}] [${req.method} ${req.originalUrl}]`
   );
@@ -47,7 +47,7 @@ function handleError(err, req, res, next) {
 
   const errorResponse = messageMap[err?.name];
 
-  if (errorResponse && errorResponse.status) {
+  if (errorResponse?.status) {
     return res
       .status(errorResponse.status)
       .json({ message: errorResponse.message });

@@ -19,17 +19,14 @@ const sanitizeUser = (user) => {
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => {
-      const sanitizedUsers = users.map(sanitizeUser);
-      res.status(OK).json(sanitizedUsers);
-    })
+    .then((users) => res.status(OK).json(users.map(sanitizeUser)))
     .catch(next);
 };
 
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
 
-  User.findById(userId)
+  return User.findById(userId)
     .orFail()
     .then((user) => res.status(OK).json(sanitizeUser(user)))
     .catch(next);
@@ -39,13 +36,10 @@ const updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
 
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     userId,
     { name, avatar },
-    {
-      new: true,
-      runValidators: true,
-    }
+    { new: true, runValidators: true }
   )
     .orFail()
     .then((updatedUser) => res.status(OK).json(sanitizeUser(updatedUser)))
@@ -61,15 +55,17 @@ const createUser = (req, res, next) => {
       .json({ message: "Email and password are required." });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         return res.status(CONFLICT).json({ message: "Email already exists." });
       }
 
-      return bcrypt.hash(password, 10).then((hashedPassword) => {
-        return User.create({ name, avatar, email, password: hashedPassword });
-      });
+      return bcrypt
+        .hash(password, 10)
+        .then((hashedPassword) =>
+          User.create({ name, avatar, email, password: hashedPassword })
+        );
     })
     .then((user) => res.status(CREATED).json(sanitizeUser(user)))
     .catch(next);
@@ -84,18 +80,16 @@ const login = (req, res) => {
       .json({ message: "Email and password are required." });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.status(OK).json({ token });
+      return res.status(OK).json({ token });
     })
-    .catch(() => {
-      res
-        .status(UNAUTHORIZED)
-        .json({ message: "Incorrect email or password." });
-    });
+    .catch(() =>
+      res.status(UNAUTHORIZED).json({ message: "Incorrect email or password." })
+    );
 };
 
 module.exports = {
