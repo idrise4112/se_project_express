@@ -6,7 +6,7 @@ const {
   SERVER_ERROR,
 } = require("./errors");
 
-function handleError(err, req, res) {
+function handleError(err, req, res, next) {
   console.error(
     `[${new Date().toISOString()}] [${req.method} ${req.originalUrl}]`
   );
@@ -50,16 +50,21 @@ function handleError(err, req, res) {
   if (errorResponse?.status) {
     return res
       .status(errorResponse.status)
+      .type("application/json")
       .json({ message: errorResponse.message });
   }
 
   if (err?.statusCode && err?.message) {
-    return res.status(err.statusCode).json({ message: err.message });
+    return res
+      .status(err.statusCode)
+      .type("application/json")
+      .json({ message: err.message });
   }
 
-  console.warn(`Unhandled error type: ${err?.name}`);
+  console.warn(` Unhandled error type: ${err?.name}`);
   return res
     .status(SERVER_ERROR)
+    .type("application/json")
     .json({ message: "An error has occurred on the server." });
 }
 
