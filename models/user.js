@@ -8,6 +8,19 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
   },
+  email: {
+    type: String,
+    required: [true, "Email is required."],
+    validate: {
+      validator: validator.isEmail,
+      message: "Please enter a valid email address.",
+    },
+  },
+  password: {
+    type: String,
+    required: [true, "Password is required."],
+    minlength: [6, "Password must be at least 6 characters."],
+  },
   avatar: {
     type: String,
     required: [true, "The avatar field is required."],
