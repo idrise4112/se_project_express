@@ -47,10 +47,15 @@ const unlikeItem = (req, res, next) => {
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
 
+  // we should check if the currently logged in user actually owns this item, before we delete it
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return next(new BadRequestError("Invalid item ID"));
+  }
+
   clothingItem
     .findByIdAndDelete(itemId)
     .orFail()
-    .then((deletedItem) => res.status(200).json({ data: deletedItem }))
+    .then((deletedItem) => res.status(403).json({ data: deletedItem }))
     .catch(next);
 };
 
