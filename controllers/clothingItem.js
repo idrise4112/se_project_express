@@ -1,4 +1,10 @@
+const mongoose = require("mongoose");
 const clothingItem = require("../models/clothingItem");
+const {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} = require("../utils/errors");
 
 // POST /items
 const createItem = (req, res, next) => {
@@ -24,9 +30,13 @@ const likeItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return next(new BadRequestError("Invalid item ID"));
+  }
+
   clothingItem
     .findByIdAndUpdate(itemId, { $addToSet: { likes: userId } }, { new: true })
-    .orFail()
+    .orFail(() => new NotFoundError("Item not found"))
     .then((updatedItem) => res.status(200).json({ data: updatedItem }))
     .catch(next);
 };
@@ -36,9 +46,13 @@ const unlikeItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return next(new BadRequestError("Invalid item ID"));
+  }
+
   clothingItem
     .findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
-    .orFail()
+    .orFail(() => new NotFoundError("Item not found"))
     .then((updatedItem) => res.status(200).json({ data: updatedItem }))
     .catch(next);
 };
@@ -46,16 +60,24 @@ const unlikeItem = (req, res, next) => {
 // DELETE /items/:itemId
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
+  const userId = req.user._id;
 
-  // we should check if the currently logged in user actually owns this item, before we delete it
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
     return next(new BadRequestError("Invalid item ID"));
   }
 
   clothingItem
-    .findByIdAndDelete(itemId)
-    .orFail()
-    .then((deletedItem) => res.status(403).json({ data: deletedItem }))
+    .findById(itemId)
+    .orFail(() => new NotFoundError("Item not found"))
+    .then((item) => {
+      if (!item.owner.equals(userId)) {
+        throw new ForbiddenError(
+          "You do not have permission to delete this item"
+        );
+      }
+      return item.deleteOne();
+    })
+    .then(() => res.status(200).json({ message: "Item deleted successfully" }))
     .catch(next);
 };
 
