@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs"); // ✅ Import bcrypt
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -15,11 +16,13 @@ const userSchema = new mongoose.Schema({
       validator: validator.isEmail,
       message: "Please enter a valid email address.",
     },
+    unique: true, // ✅ Optional: helps prevent duplicate emails
   },
   password: {
     type: String,
     required: [true, "Password is required."],
     minlength: [6, "Password must be at least 6 characters."],
+    select: false, // ✅ Prevents password from being returned in queries
   },
   avatar: {
     type: String,
@@ -32,5 +35,23 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+// ✅ Static method must be added after schema is defined
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email })
+    .select("+password") // Include password explicitly
+    .then((user) => {
+      if (!user) {
+        throw new Error("Incorrect email or password");
+      }
+
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new Error("Incorrect email or password");
+        }
+        return user;
+      });
+    });
+};
 
 module.exports = mongoose.model("user", userSchema);

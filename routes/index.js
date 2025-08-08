@@ -8,13 +8,11 @@ const auth = require("../middlewares/auth");
 // Public Routes
 router.post("/signin", login);
 router.post("/signup", createUser);
-router.get("/items", itemRouter); // expose GET /items before auth middleware
-
-// Protect all routes after this
 router.use(auth);
+router.get("/items", itemRouter);
 
 // Protected Routes
-router.use("/items", itemRouter); // for POST, PUT, DELETE if defined
+router.use("/items", itemRouter);
 router.use("/users", userRouter);
 
 // Fallback Route

@@ -1,10 +1,10 @@
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("./errors");
 
-function handleError(err, res) {
-  console.error("Error name:", err.name);
-  // console.error("Stack trace:", err.stack);
+function handleError(err, req, res, next) {
+  console.error(err);
 
-  const messageMap = {
+  // Mongoose error mapping
+  const mongooseErrorMap = {
     ValidationError: {
       status: BAD_REQUEST,
       message: "Invalid data provided.",
@@ -19,17 +19,20 @@ function handleError(err, res) {
     },
   };
 
-  const errorResponse = messageMap[err.name];
-
-  if (errorResponse) {
-    return res
-      .status(errorResponse.status)
-      .send({ message: errorResponse.message });
+  if (mongooseErrorMap[err.name]) {
+    const { status, message } = mongooseErrorMap[err.name];
+    return res.status(status).json({ message });
   }
 
-  return res
-    .status(SERVER_ERROR)
-    .send({ message: "An error has occurred on the server." });
+  if (typeof err.statusCode === "number") {
+    const message = err.message || "An error occurred.";
+    return res.status(err.statusCode).json({ message });
+  }
+
+  const fallbackStatus = SERVER_ERROR;
+  const fallbackMessage =
+    err?.message || "An error has occurred on the server.";
+  return res.status(fallbackStatus).json({ message: fallbackMessage });
 }
 
 module.exports = handleError;
