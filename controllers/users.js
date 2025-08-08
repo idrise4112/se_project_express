@@ -10,10 +10,23 @@ const {
   CONFLICT,
 } = require("../utils/errors");
 
+<<<<<<< HEAD
+=======
+// Helper to sanitize user object
+>>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
 const sanitizeUser = (user) => {
   const obj = user.toObject();
   delete obj.password;
   return obj;
+<<<<<<< HEAD
+=======
+};
+
+const getUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.status(OK).json(users.map(sanitizeUser)))
+    .catch(next);
+>>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -58,11 +71,17 @@ const createUser = (req, res, next) => {
         .hash(password, 10)
         .then((hashedPassword) =>
           User.create({ name, avatar, email, password: hashedPassword })
+<<<<<<< HEAD
         )
         .then((user) => {
           return res.status(CREATED).json(sanitizeUser(user));
         });
     })
+=======
+        );
+    })
+    .then((user) => res.status(CREATED).json(sanitizeUser(user)))
+>>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
     .catch(next);
 };
 
@@ -82,6 +101,7 @@ const login = (req, res, next) => {
       });
       return res.status(OK).json({ token });
     })
+<<<<<<< HEAD
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
         return res
@@ -93,6 +113,15 @@ const login = (req, res, next) => {
 };
 
 module.exports = {
+=======
+    .catch(() =>
+      res.status(UNAUTHORIZED).json({ message: "Incorrect email or password." })
+    );
+};
+
+module.exports = {
+  getUsers,
+>>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
   getCurrentUser,
   updateUser,
   createUser,
