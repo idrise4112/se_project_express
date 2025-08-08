@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-<<<<<<< HEAD
 const bcrypt = require("bcryptjs"); // ✅ Import bcrypt
-=======
-const bcrypt = require("bcryptjs");
-const { UnauthorizedError } = require("../utils/errors");
->>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -42,7 +37,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-<<<<<<< HEAD
 // ✅ Static method must be added after schema is defined
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
@@ -50,34 +44,15 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       if (!user) {
         throw new Error("Incorrect email or password");
-=======
-// Static method for login
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email })
-    .select("+password")
-    .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError("Incorrect email or password");
->>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
       }
 
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-<<<<<<< HEAD
           throw new Error("Incorrect email or password");
         }
-=======
-          throw new UnauthorizedError("Incorrect email or password");
-        }
-
->>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
         return user;
       });
     });
 };
 
-<<<<<<< HEAD
 module.exports = mongoose.model("user", userSchema);
-=======
-module.exports = mongoose.model("User", userSchema);
->>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641

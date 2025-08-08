@@ -8,11 +8,6 @@ const auth = require("../middlewares/auth");
 // Public Routes
 router.post("/signin", login);
 router.post("/signup", createUser);
-<<<<<<< HEAD
-=======
-
-// Protect all routes after this
->>>>>>> 19347f058f0c0ab281e0307cc85b15d3f3b71641
 router.use(auth);
 router.get("/items", itemRouter);
 
