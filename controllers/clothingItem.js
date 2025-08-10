@@ -26,15 +26,15 @@ const likeItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new Error("Invalid item ID"));
-  }
+  //if (!mongoose.Types.ObjectId.isValid(itemId)) {
+  // return next(new Error("Invalid item ID"));
+  // }
 
   clothingItem
     .findByIdAndUpdate(itemId, { $addToSet: { likes: userId } }, { new: true })
     .orFail()
     .then((updatedItem) => res.send({ data: updatedItem }))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 // UNLIKE /items/:itemId/likes
@@ -42,48 +42,45 @@ const unlikeItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new Error("Invalid item ID"));
-  }
+  //if (!mongoose.Types.ObjectId.isValid(itemId)) {
+  // return next(new Error("Invalid item ID"));
+  //}
 
   clothingItem
     .findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
     .orFail()
     .then((updatedItem) => res.send({ data: updatedItem }))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 // DELETE /items/:itemId —
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
-  const userId = req.user._id;
+  // const userId = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new Error("Invalid item ID"));
-  }
+  // // if (!mongoose.Types.ObjectId.isValid(itemId)) {
+  // //   return next(new Error("Invalid item ID"));
+  // // }
 
-  console.log("Deleeting item with id:", itemId);
-  const deleteItem = (req, res, next) => {
-    const { itemId } = req.params;
-    const userId = req.user._id;
+  // console.log("Deleeting item with id:", itemId);
+  // const deleteItem = (req, res, next) => {
+  //   const { itemId } = req.params;
+  //   const userId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(itemId)) {
-      return next(new Error("Invalid item ID"));
-    }
+  //   //if (!mongoose.Types.ObjectId.isValid(itemId)) {
+  //   // return next(new Error("Invalid item ID"));
+  //   //}
 
-    console.log("Deleting item with id:", itemId);
+  //   console.log("Deleting item with id:", itemId);
 
-    clothingItem
-      .findByIdAndDelete(itemId)
-      .orFail()
-      .then((deletedItem) => {
-        res.status(200).json({ data: deletedItem });
-      })
-      .catch((err) => {
-        console.error(err);
-        next(err);
-      });
-  };
+  //   clothingItem
+  //     .findByIdAndDelete(itemId)
+  //     .orFail()
+  //     .then((deletedItem) => {
+  //       res.status(200).json({ data: deletedItem });
+  //     })
+  //     .catch(next);
+  // };
   // clothingItem
   //   .findByIdAndDelete(itemId)
   //   .orFail(() => new NotFoundError(`Item with id ${itemId} not found`))
@@ -101,10 +98,7 @@ const deleteItem = (req, res, next) => {
     .findByIdAndDelete(itemId)
     .orFail()
     .then((deletedItem) => res.status(200).send({ data: deletedItem }))
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports = {
