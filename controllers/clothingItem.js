@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const clothingItem = require("../models/clothingItem");
 
 // POST /items
@@ -26,7 +27,7 @@ const likeItem = (req, res, next) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new BadRequestError("Invalid item ID"));
+    return next(new Error("Invalid item ID"));
   }
 
   clothingItem
@@ -42,7 +43,7 @@ const unlikeItem = (req, res, next) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new BadRequestError("Invalid item ID"));
+    return next(new Error("Invalid item ID"));
   }
 
   clothingItem
@@ -58,11 +59,31 @@ const deleteItem = (req, res, next) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return next(new BadRequestError("Invalid item ID"));
+    return next(new Error("Invalid item ID"));
   }
 
   console.log("Deleeting item with id:", itemId);
+  const deleteItem = (req, res, next) => {
+    const { itemId } = req.params;
+    const userId = req.user._id;
 
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+      return next(new Error("Invalid item ID"));
+    }
+
+    console.log("Deleting item with id:", itemId);
+
+    clothingItem
+      .findByIdAndDelete(itemId)
+      .orFail()
+      .then((deletedItem) => {
+        res.status(200).json({ data: deletedItem });
+      })
+      .catch((err) => {
+        console.error(err);
+        next(err);
+      });
+  };
   // clothingItem
   //   .findByIdAndDelete(itemId)
   //   .orFail(() => new NotFoundError(`Item with id ${itemId} not found`))
