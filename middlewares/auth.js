@@ -24,7 +24,4 @@ module.exports = (req, res, next) => {
   } catch (err) {
     return next(new AuthError("Invalid token."));
   }
-
-  req.user = payload;
-  return next();
 };

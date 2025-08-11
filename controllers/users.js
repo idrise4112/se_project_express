@@ -59,9 +59,7 @@ const createUser = (req, res, next) => {
         .then((hashedPassword) =>
           User.create({ name, avatar, email, password: hashedPassword })
         )
-        .then((user) => {
-          return res.status(CREATED).json(sanitizeUser(user));
-        });
+        .then((user) => res.status(CREATED).json(sanitizeUser(user)));
     })
     .catch(next);
 };
