@@ -8,8 +8,6 @@ const auth = require("../middlewares/auth");
 // Public Routes
 router.post("/signin", login);
 router.post("/signup", createUser);
-router.use(auth);
-router.get("/items", itemRouter);
 
 // Protected Routes
 router.use("/items", itemRouter);

@@ -33,7 +33,4 @@ app.use("/", mainRouter);
 // Centralized error handler
 app.use(handleError);
 
-// Centralized error handler
-app.use(handleError);
-
 module.exports = app;
