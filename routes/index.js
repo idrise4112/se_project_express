@@ -3,7 +3,6 @@ const itemRouter = require("./clothingItem");
 const userRouter = require("./users");
 const { createUser, login } = require("../controllers/users");
 const { NOT_FOUND } = require("../utils/errors");
-const auth = require("../middlewares/auth");
 
 // Public Routes
 router.post("/signin", login);
