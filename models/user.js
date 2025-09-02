@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Email is required."],
-    unique: true, // ✅ Enforces uniqueness at the DB level
+    unique: true, //
     validate: {
       validator: validator.isEmail,
       message: "Please enter a valid email address.",
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is required."],
     minlength: [6, "Password must be at least 6 characters."],
-    select: false, // ✅ Prevents password from being returned in queries
+    select: false, //
   },
   avatar: {
     type: String,
@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// ✅ Static method must be added after schema is defined
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
     .select("+password") // Include password explicitly
