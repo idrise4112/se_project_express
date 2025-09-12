@@ -1,26 +1,47 @@
-# WTWR (What to Wear?): Back End
+🧥 WTWR – What to Wear
+🌦️ Weather-Based Clothing Recommendation App
+WTWR is a full-stack web application that helps users decide what to wear based on the current weather in their location. Users can browse, like, and add clothing items, view weather data, and manage their profile—all in a clean, responsive interface.
 
-## Project Overview
+📦 Repositories : https://github.com/idrise4112/se_project_react
+https://github.com/idrise4112/se_project_express
 
-WTWR is a back-end project designed to power the "What to Wear?" application. It provides an API that enables user authorization, secure data handling, and support for storing and managing clothing items. The goal is to create a scalable, server with modern development workflows.
+- Frontend (React + Vite):
+  🔗 se_project_react
+- Backend (Express + MongoDB):
 
-## ⚙️ Technologies & Techniques
+  The backend includes RESTful routes, JWT authentication, user and item controllers, and MongoDB integration.
 
-- **Node.js & Express.js** for server-side development and routing
-- **MongoDB with Mongoose** for database management and schema validation
-- **JWT (JSON Web Token)** for secure user authentication
-- **Centralized error handling** using custom error classes and middleware
-- **ESLint** for maintaining clean and consistent code
-- **Postman** for API testing, including collections and environment setup
+🛠️ Technologies Used
+Frontend:
 
-## link to project video : \*\* https://www.loom.com/share/d72c2a4a0cc444f0a4494090c93d68ab?sid=43fdaa90-6c37-49f3-83c6-95b0e7a3d84b
+- React (with Hooks and Context API)
+- Vite (for fast bundling and HMR)
+- React Router
+- CSS Modules
+- Responsive design and accessibility best practices
+  Backend:
+- Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- RESTful API architecture
+- CORS, Helmet, and centralized error handling
 
-## Running the Project
+📸 Screenshots
+(Add images or GIFs here showing the homepage, weather card, clothing items, modals, and profile page.)
+<img width="612" height="535" alt="Screenshot 2025-09-12 112724" src="https://github.com/user-attachments/assets/f9e833df-f8da-4a3a-b0f0-2b2a196134c6" />
+<img width="1912" height="1053" alt="Screenshot 2025-09-12 112640" src="https://github.com/user-attachments/assets/d733b3af-35db-4372-918c-c2f6b46b3453" />
+<img width="1916" height="1053" alt="Screenshot 2025-09-12 112553" src="https://github.com/user-attachments/assets/166bab5d-7f30-4f99-a930-abfc0a32df29" />
 
-To start the server normally:
 
-```bash
-npm run start
-```
 
-![image]()
+🎥 Video Demo
+(Optional but powerful—record a walkthrough of your app using Loom or OBS and link it here.)
+
+🧪 Features
+
+- Weather-based clothing suggestions
+- User authentication (Sign Up / Log In / Sign Out)
+- Add, like, and delete clothing items
+- Edit user profile and avatar
+- Protected routes and token validation
+- Responsive design for mobile and desktop
