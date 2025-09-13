@@ -27,15 +27,9 @@ Frontend:
 - CORS, Helmet, and centralized error handling
 
 📸 Screenshots
-(Add images or GIFs here showing the homepage, weather card, clothing items, modals, and profile page.)
 <img width="612" height="535" alt="Screenshot 2025-09-12 112724" src="https://github.com/user-attachments/assets/f9e833df-f8da-4a3a-b0f0-2b2a196134c6" />
 <img width="1912" height="1053" alt="Screenshot 2025-09-12 112640" src="https://github.com/user-attachments/assets/d733b3af-35db-4372-918c-c2f6b46b3453" />
 <img width="1916" height="1053" alt="Screenshot 2025-09-12 112553" src="https://github.com/user-attachments/assets/166bab5d-7f30-4f99-a930-abfc0a32df29" />
-
-
-
-🎥 Video Demo
-(Optional but powerful—record a walkthrough of your app using Loom or OBS and link it here.)
 
 🧪 Features
 
