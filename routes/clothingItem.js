@@ -8,6 +8,8 @@ const {
 } = require("../controllers/clothingItem");
 const auth = require("../middlewares/auth");
 
+// starts with /items
+
 router.get("/", getItems);
 
 router.post("/", auth, createItem);
