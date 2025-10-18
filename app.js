@@ -1,9 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 
 const mainRouter = require("./routes/index");
-const handleError = require("./utils/handleError");
+const errorHandler = require("./middlewares/error-handler");
+const { requestLogger, errorLogger } = require("./middlewares/logger"); // ✅ Import loggers
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -19,19 +22,26 @@ mongoose
     });
   })
   .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error(" MongoDB connection error:", err);
+    console.error("MongoDB connection error:", err);
   });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Request logger BEFORE routes
+app.use(requestLogger);
 
+// Routes
 app.use("/", mainRouter);
 
+// Error logger AFTER routes, BEFORE error handlers
+app.use(errorLogger);
+
+// Celebrate error handler
+app.use(errors());
+
 // Centralized error handler
-app.use(handleError);
+app.use(errorHandler);
 
 module.exports = app;
