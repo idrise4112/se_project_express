@@ -36,3 +36,5 @@ Features
 
 Deployed Project
 Live App : https://wtwfrontendd.strangled.net/
+
+project pitch video: loom.com/share/ee805bf27a704692a94fc6b9f4d0dfbd
